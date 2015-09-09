@@ -12,7 +12,7 @@ redis_nofile_limit: 16384
 # Also applies for Redis Sentinel
 redis_as_service: true
 redis_service_name: redis_{redis_port}
-use_systemd: false
+redis_use_systemd: false
 
 ## Networking/connection options
 redis_bind: 0.0.0.0

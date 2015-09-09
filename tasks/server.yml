@@ -15,11 +15,11 @@
       - default/redis.init.j2
       paths:
         - ../templates
-  when: redis_as_service and not use_systemd
+  when: redis_as_service and not redis_use_systemd
 
 - name: create redis systemd service
   template: src="../templates/redis.service.j2" dest=/etc/systemd/system/{{ redis_service_name }}
-  when: redis_as_service and use_systemd
+  when: redis_as_service and redis_use_systemd
 
 - name: set redis to start at boot
   service: name={{ redis_service_name }} enabled=yes
@@ -34,7 +34,7 @@
         owner={{ redis_user }}
         state=directory
         recurse=yes
-  when: not use_systemd
+  when: not redis_use_systemd
 
 - name: ensure logfile directory exists and has correct owner
   file: path={{ redis_logfile|dirname }}
@@ -59,13 +59,13 @@
 - name: add redis init config file
   template: dest=/etc/sysconfig/redis_{{ redis_port }}
             src=redis.init.conf.j2
-  when: ansible_os_family == "RedHat" and not use_systemd
+  when: ansible_os_family == "RedHat" and not redis_use_systemd
   notify: restart redis
 
 - name: add redis init config file
   template: dest=/etc/default/redis_{{ redis_port }}
             src=redis.init.conf.j2
-  when: ansible_os_family == "Debian" and not use_systemd
+  when: ansible_os_family == "Debian" and not redis_use_systemd
   notify: restart redis
 
 # Flush handlers before ensuring the service is started to prevent
